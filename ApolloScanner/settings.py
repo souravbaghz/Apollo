@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'Assets',
     'Configuration',
     'GithubScan',
+    'BruteScan',
     'VulnerableScan',
     'simpleui',
     'django.contrib.admin',
@@ -138,7 +139,7 @@ SIMPLEUI_CONFIG = {
 
     # 用于菜单排序和过滤, 不填此字段为默认排序和全部显示。空列表[] 为全部不显示.
     # 'menu_display': ['资产管理', '扫描任务', '负载管理', '信息收集', '用户管理', '系统配置'],
-    'menu_display': ['资产扫描管理', 'Github信息收集', '漏洞扫描验证', '系统配置管理'],
+    'menu_display': ['资产扫描管理', 'Github信息收集', '暴力破解验证', '漏洞扫描验证', '系统配置管理'],
 
     # 设置是否开启动态菜单, 默认为False. 如果开启, 则会在每次用户登陆时刷新展示菜单内容。
     # 一般建议关闭。
@@ -198,7 +199,28 @@ SIMPLEUI_CONFIG = {
                 },
             ]
         },
-{
+        {
+            'name': '暴力破解验证',
+            'icon': 'fa fa-university',
+            'models': [
+                {
+                    'name': '负载管理',
+                    'url': 'BruteScan/bruteregister',
+                    'icon': 'fa fa-bolt'
+                },
+                {
+                    'name': '暴破任务',
+                    'url': 'BruteScan/brutetasks',
+                    'icon': 'fa fa-tasks'
+                },
+                {
+                    'name': '暴破结果',
+                    'url': 'BruteScan/bruteresult',
+                    'icon': 'fa fa-server'
+                },
+            ]
+        },
+        {
             'name': '漏洞扫描验证',
             'icon': 'fa fa-rocket',
             'models': [

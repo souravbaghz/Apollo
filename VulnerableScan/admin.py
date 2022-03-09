@@ -1,7 +1,7 @@
-from .utils import Scan
 from django.db import transaction
+from VulnerableScan.views import Scan
 from django.contrib import admin, messages
-from .models import VulnerableScanTasks, ExploitRegister, VulnerableScanResult
+from VulnerableScan.models import VulnerableScanTasks, ExploitRegister, VulnerableScanResult
 
 
 # Register your models here.

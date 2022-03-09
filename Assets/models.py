@@ -24,7 +24,7 @@ class AssetList(models.Model):
     timestamp = models.DateField(db_column="timestamp", verbose_name='创建日期')
 
     def __str__(self):
-        return self.ip_address
+        return str(self.ip_address) + ":" + str(self.port)
 
     def change(self):
         btn_str = '<a class="btn btn-xs btn-danger" href="{}">' \
