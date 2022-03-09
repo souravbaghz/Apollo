@@ -26,7 +26,6 @@ class Configuration(models.Model):
     ipaddress = models.GenericIPAddressField(db_column="ipaddress", verbose_name='系统地址', null=True, blank=True, default="127.0.0.1")
     domain = models.CharField(db_column="domain", max_length=256, verbose_name='系统域名', default="apollo.local", null=True, blank=True)
     count = models.IntegerField(db_column="count", verbose_name='配置值', default=10, null=True, blank=True)
-    timestamp = models.DateField(db_column="timestamp", verbose_name='创建日期')
 
     def __str__(self):
         for item in self.name_choices:
@@ -45,4 +44,39 @@ class Configuration(models.Model):
 
     class Meta:
         verbose_name = '配置信息'
+        verbose_name_plural = verbose_name
+
+
+class Services(models.Model):
+    id = models.AutoField(primary_key=True, db_column="id", verbose_name='序号')
+    name_choices = (
+        ("1", "HTTP服务"),
+        ("2", "DNS服务"),
+        ("3", "JNDI服务"),
+        ("4", "HTTPS服务"),
+        ("5", "TCP监听"),
+    )
+    name = models.CharField(unique=True, max_length=2, choices=name_choices, verbose_name='配置名称')
+    port = models.IntegerField(db_column="port", verbose_name='端口')
+    ipaddress = models.GenericIPAddressField(db_column="ipaddress", verbose_name='系统地址', default="127.0.0.1")
+    domain = models.CharField(db_column="domain", max_length=256, verbose_name='系统域名', default="apollo.local",
+                              null=True, blank=True)
+
+    def __str__(self):
+        for item in self.name_choices:
+            if self.name == item[0]:
+                return item[1]
+
+    def change(self):
+        btn_str = '<a class="btn btn-xs btn-danger" href="{}">' \
+                  '<input name="编辑"' \
+                  'type="button" id="passButton" ' \
+                  'title="passButton" value="编辑">' \
+                  '</a>'
+        return format_html(btn_str, '%s/change' % self.id)
+
+    change.short_description = '配置编辑'
+
+    class Meta:
+        verbose_name = '服务配置'
         verbose_name_plural = verbose_name

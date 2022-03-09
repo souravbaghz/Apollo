@@ -55,7 +55,7 @@ class GithubScanner(object):
                 print(exception)
 
 
-def scan(task_id):
+def start_scan(task_id):
     task_name = GithubScanTask.objects.filter(id=task_id).values_list("name")[0][0]
     keyword = GithubScanTask.objects.filter(id=task_id).values_list("keyword")[0][0]
     domain = GithubScanTask.objects.filter(id=task_id).values_list("domain")[0][0]

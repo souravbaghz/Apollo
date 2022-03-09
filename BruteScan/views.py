@@ -3,6 +3,7 @@ import datetime
 import threading
 from Assets.models import AssetList
 from ApolloScanner.settings import BASE_DIR
+from ApolloScanner.dingtalk import dingtalker
 from Configuration.models import Configuration
 from BruteScan.models import BruteRegister, BruteTasks, BruteResult
 
@@ -52,6 +53,7 @@ class BruteScanner:
                 self.passwords.append(password)
 
         self.exploit_id = BruteTasks.objects.filter(id=task_id).values_list("exploit")[0][0]
+        self.exploit_name = BruteRegister.objects.filter(id=self.exploit_id).values_list("exploit_name")[0][0]
         self.exploit_file = BruteRegister.objects.filter(id=self.exploit_id).values_list("file_object")[0][0]
         self.model_name = str(self.exploit_file).replace("/", ".").split(".py")[0]
         function_name = self.model_name.split(".")[-1]
@@ -71,8 +73,9 @@ class BruteScanner:
 
     def verify(self, address, port, username, password):
         result = self.function(address, port, username, password)
-        print("RET:" + str(result))
         if result:
+            message = "弱口令: %s %s %s %s %s \n" % (str(self.exploit_name), address, str(port), username, password)
+            dingtalker.send(message)
             self.cursor.insert(address, port, username, password)
         self.thread_size -= 1
 
@@ -92,6 +95,6 @@ class BruteScanner:
                             continue
 
 
-def scan(task_id):
+def start_scan(task_id):
     scanner = BruteScanner(task_id)
     scanner.run()

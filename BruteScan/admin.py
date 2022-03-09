@@ -1,6 +1,6 @@
 import threading
 from django.db import transaction
-from BruteScan.views import scan
+from BruteScan.views import start_scan
 from django.contrib import admin, messages
 from BruteScan.models import BruteRegister, BruteTasks, BruteResult
 
@@ -35,7 +35,7 @@ class BruteTasksAdmin(admin.ModelAdmin):
                 work_ids = item[1]
         if isinstance(work_ids, list):
             for work_id in work_ids:
-                thread = threading.Thread(target=scan, args=(work_id,))
+                thread = threading.Thread(target=start_scan, args=(work_id,))
                 thread.start()
                 messages.add_message(request, messages.SUCCESS, '开始暴破%s' % str(work_id))
         else:

@@ -8,8 +8,6 @@ from django.utils.html import format_html
 class ExploitRegister(models.Model):
     id = models.AutoField(primary_key=True, db_column="id", verbose_name='序号')
     exploit_name = models.CharField(max_length=32, db_column="exploit_name", verbose_name='负载名称')
-    vulnerable_id = models.CharField(max_length=32, db_column="vulnerable_id", verbose_name='漏洞编号', null=True,
-                                     blank=True)
     category_choices = (("1", "WEB漏洞"), ("2", "系统漏洞"))
     category = models.CharField(max_length=2, choices=category_choices, verbose_name='漏洞类型')
     file_object = models.FileField(upload_to='VulnerableScan/ExploitFiles/', null=True, verbose_name="负载上传")
@@ -37,7 +35,8 @@ class ExploitRegister(models.Model):
 class VulnerableScanTasks(models.Model):
     id = models.AutoField(primary_key=True, db_column="id", verbose_name='编号')
     name = models.CharField(max_length=32, db_column="name", verbose_name='任务名称')
-    target = models.ForeignKey(AssetList, verbose_name="目标选择", on_delete=models.CASCADE, default=None)
+    target = models.ForeignKey(AssetList, verbose_name="目标选择", on_delete=models.CASCADE, null=True, blank=True)
+    targets = models.TextField(db_column="targets", verbose_name='目标群', null=True, blank=True)
     exploit = models.ForeignKey(ExploitRegister, verbose_name="漏洞负载选择", on_delete=models.CASCADE, default=None)
     timestamp = models.DateField(db_column="timestamp", verbose_name='创建日期', default=timezone.now)  # 截止日期
 
@@ -63,10 +62,8 @@ class VulnerableScanResult(models.Model):
     id = models.AutoField(primary_key=True, db_column="id", verbose_name='序号')
     task_id = models.IntegerField(db_column="task_id", verbose_name='对应工单序号')
     task_name = models.CharField(max_length=32, db_column="task_name", verbose_name='工单名称')
-    vulnerable_id = models.CharField(max_length=32, db_column="vulnerable_id", verbose_name='漏洞编号')
     ip_address = models.GenericIPAddressField(db_column="ip_address", verbose_name='目标地址')
     port = models.IntegerField(db_column="port", verbose_name='目标端口', null=True)
-    description = models.TextField(db_column="description", verbose_name='任务过程描述')
     result_flag = models.BooleanField(db_column="result_flag", verbose_name='测试结果')
     timestamp = models.DateField(db_column="timestamp", verbose_name='结束日期')
 

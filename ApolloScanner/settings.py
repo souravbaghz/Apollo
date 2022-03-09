@@ -160,6 +160,11 @@ SIMPLEUI_CONFIG = {
                     'icon': 'fa fa-th-list',
                     'url': 'auth/group/'
                 },
+{
+                    'name': '服务配置',
+                    'icon': 'fa fa-map',
+                    'url': 'Configuration/services/'
+                },
                 {
                     'name': '系统配置',
                     'icon': 'fa fa-cog',

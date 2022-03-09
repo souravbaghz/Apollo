@@ -1,5 +1,5 @@
 import threading
-from GithubScan.views import scan
+from GithubScan.views import start_scan
 from django.db import transaction
 from django.contrib import admin, messages
 from GithubScan.models import GithubScanTask, GithubScanResult
@@ -25,7 +25,7 @@ class GithubScanTaskAdmin(admin.ModelAdmin):
                 work_ids = item[1]
         if isinstance(work_ids, list):
             for work_id in work_ids:
-                thread = threading.Thread(target=scan, args=(work_id,))
+                thread = threading.Thread(target=start_scan, args=(work_id,))
                 thread.start()
                 messages.add_message(request, messages.SUCCESS, '开始扫描%s' % str(work_id))
         else:

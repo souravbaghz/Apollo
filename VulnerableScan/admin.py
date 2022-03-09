@@ -1,5 +1,6 @@
+import threading
 from django.db import transaction
-from VulnerableScan.views import Scan
+from VulnerableScan.views import start_scan
 from django.contrib import admin, messages
 from VulnerableScan.models import VulnerableScanTasks, ExploitRegister, VulnerableScanResult
 
@@ -11,9 +12,9 @@ admin.site.site_title = '阿波罗自动化攻击评估系统'  # 设置title
 
 @admin.register(ExploitRegister)
 class ExploitRegisterAdmin(admin.ModelAdmin):
-    list_display = ['id', 'exploit_name', 'category', 'vulnerable_id', 'timestamp', 'change']
+    list_display = ['id', 'exploit_name', 'category', 'timestamp', 'change']
     list_filter = ['category']
-    search_fields = ['name', 'vulnerable_id']
+    search_fields = ['name']
     ordering = ["id"]
     date_hierarchy = 'timestamp'
 
@@ -34,7 +35,7 @@ class VulnerableScanTasksAdmin(admin.ModelAdmin):
                 work_ids = item[1]
         if isinstance(work_ids, list):
             for work_id in work_ids:
-                thread = Scan(work_id)
+                thread = threading.Thread(target=start_scan, args=(work_id,))
                 thread.start()
                 messages.add_message(request, messages.SUCCESS, '开始扫描%s' % str(work_id))
         else:
@@ -49,9 +50,9 @@ class VulnerableScanTasksAdmin(admin.ModelAdmin):
 
 
 @admin.register(VulnerableScanResult)
-class ExpManagerAdmin(admin.ModelAdmin):
-    list_display = ['id', 'task_id', 'task_name', 'vulnerable_id', 'result_flag', 'timestamp', 'detail']
+class VulnerableScanResultAdmin(admin.ModelAdmin):
+    list_display = ['id', 'task_id', 'task_name', 'ip_address', 'port', 'result_flag', 'timestamp', 'detail']
     list_filter = ['result_flag', 'timestamp']
-    search_fields = ['task_name', 'vulnerable_id', 'timestamp']
+    search_fields = ['task_name', 'timestamp']
     ordering = ["id"]
     date_hierarchy = 'timestamp'
